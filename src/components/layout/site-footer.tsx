@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cacheLife } from "next/cache";
 import { ArrowUp } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
@@ -6,7 +7,11 @@ import { navItems } from "@/data/navigation";
 import { profile } from "@/data/profile";
 import { cn } from "@/lib/utils";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  "use cache";
+  cacheLife("days");
+  const year = new Date().getFullYear();
+
   return (
     <footer className="border-t border-border">
       <Container className="flex flex-col items-center gap-6 py-8 text-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:py-[30px] lg:text-left">
@@ -16,7 +21,7 @@ export function SiteFooter() {
             <span className="text-primary">{profile.lastName}</span>
           </p>
           <p className="mt-1 hidden text-sm text-muted-foreground lg:block">
-            © {new Date().getFullYear()} {profile.fullName}. All rights reserved.
+            © {year} {profile.fullName}. All rights reserved.
           </p>
         </div>
 
@@ -36,7 +41,7 @@ export function SiteFooter() {
         </nav>
 
         <p className="order-3 text-sm text-muted-foreground lg:hidden">
-          © {new Date().getFullYear()} {profile.fullName}. All rights reserved.
+          © {year} {profile.fullName}. All rights reserved.
         </p>
 
         <Link
