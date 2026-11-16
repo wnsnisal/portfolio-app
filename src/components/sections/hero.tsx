@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 function HeroVisual() {
   return (
     <div className="relative mx-auto h-[300px] w-[260px] lg:h-[440px] lg:w-[440px]">
-      <div className="absolute top-0 left-2.5 size-60 rounded-full bg-gradient-to-b from-[#7c6dfb] to-[#4a3dc2] lg:left-[50px] lg:size-[380px]">
+      <div className="absolute top-0 left-2.5 size-60 rounded-full bg-gradient-to-b from-[#fff] to-[#b1a9ff] dark:from-[#7c6dfb] dark:to-[#4a3dc2]  lg:left-[50px] lg:size-[380px]">
         {(["light", "dark"] as const).map((theme) => (
           <Image
             key={theme}
