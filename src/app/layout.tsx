@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { AmbientBackground } from "@/components/layout/ambient-background";
-import { ThemeScript } from "@/components/layout/theme-script";
+import { ThemeProviders } from "@/components/layout/theme-provider";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
@@ -75,13 +75,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} h-full`}
       suppressHydrationWarning
     >
-      <head>
-        <ThemeScript />
-      </head>
       <body className="flex min-h-full flex-col">
-        <AmbientBackground />
-        {children}
-        <Toaster richColors position="bottom-right" />
+        <ThemeProviders>
+          <AmbientBackground />
+          {children}
+          <Toaster richColors position="bottom-right" />
+        </ThemeProviders>
       </body>
     </html>
   );

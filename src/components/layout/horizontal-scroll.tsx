@@ -78,12 +78,22 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
 
     // ScrollTrigger drives the sideways slide: as the page scrolls the full
     // `count * 100vh` of the container, the sticky track is scrubbed from 0 to
-    // `-(count - 1) * 100vw`. GSAP batches every trigger onto one shared ticker
-    // and caches start/end positions, so unlike the old per-frame
+    // `-(count - 1) * <panel width>`. GSAP batches every trigger onto one shared
+    // ticker and caches start/end positions, so unlike the old per-frame
     // `getBoundingClientRect` this measures only on refresh.
+    //
+    // The slide distance is one visible panel width per step, and that width is
+    // the container's `clientWidth` — NOT `window.innerWidth`. The two differ by
+    // the vertical scrollbar: the page is `count * 100vh` tall so it always has
+    // one, and `innerWidth` / `100vw` include its width while the clipped track
+    // (sticky `overflow-hidden`, sized to `clientWidth`) does not. Driving the
+    // slide by `innerWidth` while the panels are only `clientWidth` wide of
+    // usable space left every section resting half a scrollbar-width (~7–8px)
+    // off-centre. Panels below are sized `w-full` (= `clientWidth`) and the
+    // seams spaced in `%`, so panel width, seam pitch and this step all agree.
     const ctx = gsap.context(() => {
       gsap.to(track, {
-        x: () => -(count - 1) * window.innerWidth,
+        x: () => -(count - 1) * container.clientWidth,
         ease: "none",
         // Keep the transform 3D at rest *and* while scrubbing. With the default
         // `force3D: "auto"` GSAP renders a 2D `translate()` at rest and switches
@@ -147,7 +157,7 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
               <div
                 key={`seam-${i}`}
                 className="absolute top-0 bottom-0"
-                style={{ left: `${(i + 1) * 100}vw` }}
+                style={{ left: `${(i + 1) * 100}%` }}
               >
                 {/* soft column glow */}
                 <div className="absolute top-1/2 left-1/2 size-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,var(--primary),transparent_70%)] opacity-[0.10] blur-2xl dark:opacity-[0.16]" />
@@ -163,7 +173,7 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
           {panels.map((panel) => (
             <div
               key={`panel-${panel.id}`}
-              className="relative flex h-full w-screen shrink-0 flex-col justify-center overflow-hidden pt-6 pb-20"
+              className="relative flex h-full w-full shrink-0 flex-col justify-center overflow-hidden pt-6 pb-20"
             >
               {panel.node}
             </div>
