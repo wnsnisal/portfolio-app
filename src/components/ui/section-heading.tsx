@@ -6,7 +6,7 @@ export function SectionHeading({ className, ...props }: SectionHeadingProps) {
   return (
     <h2
       className={cn(
-        "text-[1.75rem] leading-tight font-bold tracking-tight md:text-3xl",
+        "text-3xl leading-tight font-bold tracking-tight md:text-4xl",
         className,
       )}
       {...props}

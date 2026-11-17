@@ -1,11 +1,8 @@
-import Link from "next/link";
 import { cacheLife } from "next/cache";
-import { ArrowUp } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { buttonVariants } from "@/components/ui/button";
-import { navItems } from "@/data/navigation";
+import { socialIcons } from "@/components/ui/icons";
 import { profile } from "@/data/profile";
-import { cn } from "@/lib/utils";
+import { socials } from "@/data/socials";
 
 export async function SiteFooter() {
   "use cache";
@@ -14,46 +11,33 @@ export async function SiteFooter() {
 
   return (
     <footer className="border-t border-border lg:fixed lg:inset-x-0 lg:bottom-0 lg:z-30 lg:bg-background/85 lg:backdrop-blur">
-      <Container className="flex flex-col items-center gap-6 py-8 text-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:py-[30px] lg:text-left">
-        <div className="order-1 lg:order-none">
-          <p className="font-semibold">
-            {profile.firstName}{" "}
-            <span className="text-primary">{profile.lastName}</span>
-          </p>
-          <p className="mt-1 hidden text-sm text-muted-foreground lg:block">
-            © {year} {profile.fullName}. All rights reserved.
-          </p>
-        </div>
-
-        <nav aria-label="Footer" className="order-2 lg:order-none">
-          <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            {navItems.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={`#${item.id}`}
-                  className="rounded-sm transition-colors hover:text-foreground"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <p className="order-3 text-sm text-muted-foreground lg:hidden">
-          © {year} {profile.fullName}. All rights reserved.
+      <Container className="flex flex-col items-center gap-3 py-5 text-center sm:flex-row sm:justify-between sm:gap-4 sm:py-3.5 sm:text-left">
+        <p className="text-sm text-muted-foreground">
+          © {year}{" "}
+          <span className="font-medium text-foreground">
+            {profile.fullName}
+          </span>
+          . All rights reserved.
         </p>
 
-        <Link
-          href="#home"
-          aria-label="Back to top"
-          className={cn(
-            buttonVariants({ variant: "outline", size: "icon" }),
-            "hidden size-12 rounded-full lg:ml-auto lg:inline-flex",
-          )}
-        >
-          <ArrowUp aria-hidden />
-        </Link>
+        <ul className="flex items-center gap-1">
+          {socials.map((social) => {
+            const Icon = socialIcons[social.name];
+            return (
+              <li key={social.name}>
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${social.name} (opens in a new tab)`}
+                  className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground [&_svg]:size-[18px]"
+                >
+                  <Icon />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
       </Container>
     </footer>
   );

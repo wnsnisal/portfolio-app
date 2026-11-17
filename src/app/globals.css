@@ -57,6 +57,9 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* `text-md` sits between text-sm (0.875rem) and text-lg (1.125rem). */
+  --text-md: 1rem;
+  --text-md--line-height: 1.5rem;
 }
 
 @layer base {
@@ -81,6 +84,14 @@
     @media (min-width: 1024px) {
       html {
         scroll-snap-type: y mandatory;
+        /* Horizontal mode: the snap markers are invisible position refs, not
+           content to clear below the header, so the global 6rem scroll-padding
+           must be cancelled here. Otherwise every anchor jump / snap lands 6rem
+           *earlier* in the vertical scroll than the marker, and since that
+           scroll is mapped to the sideways slide, each panel comes to rest ~6rem
+           / viewport-height of a panel-width off-centre (see HorizontalScroll's
+           "top top" start, which assumes the marker rests exactly at its top). */
+        scroll-padding-top: 0;
       }
     }
   }
@@ -97,3 +108,4 @@
     outline-offset: 2px;
   }
 }
+

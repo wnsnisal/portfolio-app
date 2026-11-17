@@ -58,12 +58,16 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
     const sticky = stickyRef.current;
     if (!container || !track || !sticky) return;
 
-    // The in-flow sticky `<header>` sits above this section, so the container's
-    // top starts one header-height down the page. We pin the track right below
-    // the header and begin the horizontal scrub from that same line — otherwise
-    // the first header-height of scrolling moves the hero straight *up* (the
-    // header scrolling away) before any sideways motion starts, which reads as
-    // "vertical first, then horizontal".
+    // The in-flow sticky `<header>` sits above this section. We pin the track
+    // right below the header (so panel content never hides under it) by nudging
+    // the sticky element down one header-height. The horizontal scrub itself,
+    // however, must start exactly when the container's top reaches the viewport
+    // top (`start: "top top"`): the id-bearing snap markers are spaced a clean
+    // `100vh` apart, so only a `100vh`-per-panel mapping that begins on that
+    // same line puts each marker's scroll rest-point at the position where its
+    // panel is horizontally centred. Offsetting the start by the header height
+    // (as a way to avoid a brief dead-zone at the very top) desyncs the two and
+    // leaves every nav jump / snap landing off-centre by up to a header-height.
     const header = document.querySelector<HTMLElement>("header");
     const applyOffset = () => {
       const h = header?.offsetHeight ?? 0;
@@ -88,9 +92,10 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
         force3D: true,
         scrollTrigger: {
           trigger: container,
-          // Fire the moment the container's top reaches the header's bottom
-          // edge — i.e. at scroll position 0, exactly where the track pins.
-          start: () => `top ${header?.offsetHeight ?? 0}px`,
+          // Start on the same line the `100vh` snap markers are measured from,
+          // so each panel's marker rest-point is its horizontally-centred
+          // position (see the note above applyOffset).
+          start: "top top",
           end: "bottom bottom",
           scrub: true,
           invalidateOnRefresh: true,
@@ -103,10 +108,13 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
   }, [enabled, count]);
 
   // Vertical fallback: plain stacked flow, ids on the wrappers for anchors.
-  // `lg:pb-24` leaves room for the footer when it is fixed (lg + reduced motion).
+  // `space-y-12` adds breathing room between sections on mobile only; it resets
+  // to `0` at `lg` (this branch renders there only under reduced motion, where
+  // each section supplies its own spacing). `lg:pb-24` leaves room for the
+  // footer when it is fixed (lg + reduced motion).
   if (!enabled) {
     return (
-      <div className="lg:pb-24">
+      <div className="space-y-12 lg:space-y-0 lg:pb-24">
         {panels.map((panel) => (
           <div key={panel.id} id={panel.id} className="scroll-mt-24">
             {panel.node}
@@ -129,11 +137,33 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
         ))}
       </div>
       <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden">
-        <div ref={trackRef} className="flex h-full will-change-transform">
+        <div ref={trackRef} className="relative flex h-full will-change-transform">
+          {/* Decorative seams between panels: a gradient line, a soft glow and
+              a pair of rotated-square shapes straddling each boundary. Sits
+              behind the panels (which are in normal flow and paint on top), so
+              it never covers section content. */}
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            {Array.from({ length: count - 1 }).map((_, i) => (
+              <div
+                key={`seam-${i}`}
+                className="absolute top-0 bottom-0"
+                style={{ left: `${(i + 1) * 100}vw` }}
+              >
+                {/* soft column glow */}
+                <div className="absolute top-1/2 left-1/2 size-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,var(--primary),transparent_70%)] opacity-[0.10] blur-2xl dark:opacity-[0.16]" />
+                {/* vertical gradient hairline */}
+                <div className="absolute inset-y-[14%] left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-primary/35 to-transparent" />
+                {/* outer diamond outline */}
+                <div className="absolute top-1/2 left-1/2 size-9 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[4px] border border-primary/25" />
+                {/* inner filled diamond */}
+                <div className="absolute top-1/2 left-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[2px] border border-primary/50 bg-primary/15" />
+              </div>
+            ))}
+          </div>
           {panels.map((panel) => (
             <div
               key={`panel-${panel.id}`}
-              className="flex h-full w-screen shrink-0 flex-col justify-center overflow-hidden pb-24"
+              className="relative flex h-full w-screen shrink-0 flex-col justify-center overflow-hidden pt-6 pb-20"
             >
               {panel.node}
             </div>

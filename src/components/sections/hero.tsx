@@ -1,4 +1,4 @@
-import { ArrowRight, LayoutGrid } from "lucide-react";
+import { ArrowRight, Download, LayoutGrid } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { buttonVariants } from "@/components/ui/button";
 import { socialIcons } from "@/components/ui/icons";
@@ -12,9 +12,12 @@ export function Hero() {
     <section aria-labelledby="hero-heading" className="w-full overflow-hidden">
       <Container className="grid items-center gap-8 pt-4 pb-10 lg:grid-cols-[1fr_440px] lg:gap-12 lg:pt-4 lg:pb-4">
         <div className="order-last flex flex-col items-center text-center lg:order-first lg:items-start lg:text-left">
-          <p className="inline-flex h-[38px] items-center gap-2.5 rounded-full border bg-card px-4 text-sm text-muted-foreground">
-            <span className="size-2 rounded-full bg-success" aria-hidden />
-            Hello, I&apos;m
+          <p className="inline-flex items-center gap-2.5 rounded-full border bg-card px-4 py-2 text-md text-muted-foreground">
+            <span className="relative flex size-2" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75 motion-reduce:hidden" />
+              <span className="relative inline-flex size-2 rounded-full bg-success" />
+            </span>
+            {profile.availability}
           </p>
           <h1
             id="hero-heading"
@@ -24,29 +27,32 @@ export function Hero() {
             <span className="text-primary">{profile.lastName}</span>
           </h1>
           <p className="mt-5 text-lg font-medium sm:text-xl lg:text-[1.75rem]">
-            {profile.role}
+            {profile.role}{" "}
           </p>
-          <p className="mt-5 max-w-[500px] text-base leading-7 text-muted-foreground lg:text-lg">
+          <p className="mt-5 max-w-135 text-lg leading-8 text-muted-foreground lg:text-xl">
             {profile.intro}
           </p>
 
           <div className="mt-7 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <a href="#contact" className={buttonVariants({ variant: "primary" })}>
-              Hire Me
+            <a
+              href="#contact"
+              className={buttonVariants({ variant: "primary", size: "lg" })}
+            >
+              Hire me
               <ArrowRight aria-hidden />
             </a>
             <a
               href="#projects"
-              className={buttonVariants({ variant: "outline" })}
+              className={buttonVariants({ variant: "outline", size: "lg" })}
             >
-              View Projects
+              Projects
               <LayoutGrid aria-hidden />
             </a>
           </div>
 
-          <div className="mt-6 flex items-center gap-4 text-muted-foreground">
-            <span className="text-sm">Find me on</span>
-            <ul className="flex gap-3">
+          <div className="mt-6 flex items-center gap-3 text-muted-foreground">
+            <span className="text-md">Find me on</span>
+            <ul className="flex gap-0">
               {socials.map((social) => {
                 const Icon = socialIcons[social.name];
                 return (
