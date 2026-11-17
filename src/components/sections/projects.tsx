@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { Parallax } from "@/components/ui/parallax";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ProjectCard } from "@/components/sections/project-card";
 import { projects } from "@/data/projects";
@@ -10,9 +11,8 @@ const github = socials.find((social) => social.name === "GitHub");
 export function Projects() {
   return (
     <section
-      id="projects"
       aria-labelledby="projects-heading"
-      className="border-t border-border py-12 lg:py-16"
+      className="w-full py-12 lg:py-16"
     >
       <Container>
         <div className="flex items-center justify-between gap-4">
@@ -32,7 +32,13 @@ export function Projects() {
         <ul className="mt-7 grid gap-5 md:grid-cols-2 lg:mt-8 lg:grid-cols-4">
           {projects.map((project, index) => (
             <li key={index}>
-              <ProjectCard project={project} />
+              <Parallax
+                axis="x"
+                speed={index % 2 === 0 ? 0.05 : 0.1}
+                className="h-full"
+              >
+                <ProjectCard project={project} />
+              </Parallax>
             </li>
           ))}
         </ul>

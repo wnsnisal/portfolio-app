@@ -5,7 +5,7 @@ import { skills } from "@/data/skills";
 
 export function Skills() {
   return (
-    <section id="skills" aria-labelledby="skills-heading">
+    <section aria-labelledby="skills-heading">
       <SectionHeading id="skills-heading">Skills</SectionHeading>
       <ul className="mt-4 grid gap-3.5 md:grid-cols-2 lg:grid-cols-3">
         {skills.map((skill) => (

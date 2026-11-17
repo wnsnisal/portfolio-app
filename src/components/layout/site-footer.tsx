@@ -13,7 +13,7 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-border lg:fixed lg:inset-x-0 lg:bottom-0 lg:z-30 lg:bg-background/85 lg:backdrop-blur">
       <Container className="flex flex-col items-center gap-6 py-8 text-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:py-[30px] lg:text-left">
         <div className="order-1 lg:order-none">
           <p className="font-semibold">

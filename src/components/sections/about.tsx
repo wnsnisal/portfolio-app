@@ -5,7 +5,7 @@ import { about } from "@/data/about";
 
 export function About() {
   return (
-    <section id="about" aria-labelledby="about-heading">
+    <section aria-labelledby="about-heading">
       <SectionHeading id="about-heading">About me</SectionHeading>
       <div className="mt-4 space-y-4 leading-[26px] text-muted-foreground">
         {about.paragraphs.map((paragraph) => (

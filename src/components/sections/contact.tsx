@@ -9,9 +9,8 @@ import { profile } from "@/data/profile";
 export function Contact() {
   return (
     <section
-      id="contact"
       aria-labelledby="contact-heading"
-      className="pb-12 lg:pb-14"
+      className="w-full py-12 lg:py-14"
     >
       <Container>
         <Card className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-[33px]">

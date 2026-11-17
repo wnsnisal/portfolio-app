@@ -2,10 +2,14 @@ import { Container } from "@/components/ui/container";
 import { Card } from "@/components/ui/card";
 import { IconBox } from "@/components/ui/icon-box";
 import { stats } from "@/data/stats";
+import { cn } from "@/lib/utils";
 
-export function Stats() {
+export function Stats({ className }: { className?: string }) {
   return (
-    <section aria-label="Highlights" className="pb-12 lg:pb-14">
+    <section
+      aria-label="Highlights"
+      className={cn("w-full py-12 lg:py-14", className)}
+    >
       <Container>
         <Card>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-5 p-5 lg:grid-cols-4 lg:gap-x-6 lg:px-[29px] lg:py-[27px]">

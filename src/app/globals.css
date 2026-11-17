@@ -71,6 +71,17 @@
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
+      /* Section-by-section snapping. Native vertical scroll drives the
+         horizontal section slide (see HorizontalScroll); the per-panel markers
+         carry `snap-start`. `mandatory` only at `lg`, where that horizontal
+         mode is active — below it the page is a normal vertical stack. */
+      scroll-snap-type: y proximity;
+    }
+
+    @media (min-width: 1024px) {
+      html {
+        scroll-snap-type: y mandatory;
+      }
     }
   }
 
