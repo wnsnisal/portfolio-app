@@ -33,7 +33,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
-      <Container className="flex h-20 items-center justify-between lg:h-[86px]">
+      <Container className="flex h-24 items-center justify-between lg:h-24">
         <Logo />
 
         <nav aria-label="Primary" className="hidden lg:block">
@@ -44,7 +44,7 @@ export function SiteHeader() {
                   href={`#${item.id}`}
                   aria-current={activeId === item.id ? "true" : undefined}
                   className={cn(
-                    "rounded-sm text-sm transition-colors hover:text-foreground",
+                    "rounded-sm text-md transition-colors hover:text-foreground",
                     activeId === item.id
                       ? "text-link"
                       : "text-muted-foreground",
@@ -58,12 +58,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          <ThemeToggle className="size-12 [&_svg]:size-5" />
           <a
             href={profile.cvPath}
             download
             className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
+              buttonVariants({ variant: "outline", size: "md" }),
               "hidden lg:inline-flex",
             )}
           >
@@ -79,7 +79,7 @@ export function SiteHeader() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             className={cn(
               buttonVariants({ variant: "ghost", size: "icon" }),
-              "lg:hidden",
+              "size-12 [&_svg]:size-6 lg:hidden",
             )}
           >
             {menuOpen ? <X aria-hidden /> : <Menu aria-hidden />}
@@ -102,7 +102,7 @@ export function SiteHeader() {
                     onClick={() => setMenuOpen(false)}
                     aria-current={activeId === item.id ? "true" : undefined}
                     className={cn(
-                      "flex h-12 items-center rounded-md px-2 text-base transition-colors hover:text-foreground",
+                      "flex h-14 items-center rounded-md px-2 text-lg transition-colors hover:text-foreground",
                       activeId === item.id
                         ? "text-link"
                         : "text-muted-foreground",

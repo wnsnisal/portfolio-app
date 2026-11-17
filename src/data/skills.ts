@@ -1,10 +1,54 @@
-import type { Skill } from "@/types";
+import {
+  Code,
+  Database,
+  Globe,
+  Palette,
+  PenTool,
+  Server,
+  Sparkles,
+  Wrench,
+} from "lucide-react";
+import type { SkillCategory } from "@/types";
 
-export const skills: Skill[] = [
-  { name: "Next.js", description: "Core framework", mark: "N" },
-  { name: "React", description: "Core library", mark: "R" },
-  { name: "TypeScript", description: "Language", mark: "TS" },
-  { name: "JavaScript", description: "Language", mark: "JS" },
-  { name: "HTML & CSS", description: "Markup and styling", mark: "CS" },
-  { name: "Tailwind CSS", description: "Styling", mark: "Tw" },
+export const skillCategories: SkillCategory[] = [
+  {
+    title: "Frontend Development",
+    icon: Code,
+    items: ["React.js", "Next.js", "TypeScript", "JavaScript", "HTML5", "CSS3"],
+  },
+  {
+    title: "Styling & UI",
+    icon: Palette,
+    items: ["Tailwind CSS", "Material UI", "SCSS"],
+  },
+  {
+    title: "Backend Development",
+    icon: Server,
+    items: ["Node.js", "Python", "Django", "FastAPI", "PHP"],
+  },
+  {
+    title: "Database",
+    icon: Database,
+    items: ["MySQL", "MongoDB"],
+  },
+  {
+    title: "Development Tools",
+    icon: Wrench,
+    items: ["Git", "GitHub", "Jira"],
+  },
+  {
+    title: "WordPress Web Development",
+    icon: Globe,
+    items: ["WordPress", "WooCommerce", "Elementor", "Custom Themes"],
+  },
+  {
+    title: "AI-Assisted Development",
+    icon: Sparkles,
+    items: ["GitHub Copilot", "Claude Code", "OpenCode"],
+  },
+  {
+    title: "UI/UX & Design",
+    icon: PenTool,
+    items: ["Figma", "Adobe XD", "Photoshop", "Illustrator"],
+  },
 ];

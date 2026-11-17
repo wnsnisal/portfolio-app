@@ -1,60 +1,83 @@
-import { Mail, Send } from "lucide-react";
+import { Download, Mail, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/container";
-import { Card } from "@/components/ui/card";
-import { IconBox } from "@/components/ui/icon-box";
 import { buttonVariants } from "@/components/ui/button";
+import { socialIcons } from "@/components/ui/icons";
+import { ContactForm } from "@/components/sections/contact-form";
 import { contact } from "@/data/contact";
 import { profile } from "@/data/profile";
+import { socials } from "@/data/socials";
+import { cn } from "@/lib/utils";
 
 export function Contact() {
   return (
-    <section
-      id="contact"
-      aria-labelledby="contact-heading"
-      className="pb-12 lg:pb-14"
-    >
+    <section aria-labelledby="contact-heading" className="w-full py-12 lg:py-14">
       <Container>
-        <Card className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-[33px]">
-          <div className="flex gap-4 lg:max-w-[397px]">
-            <IconBox className="size-12">
-              <Mail aria-hidden />
-            </IconBox>
-            <div>
-              <h2
-                id="contact-heading"
-                className="text-xl leading-7 font-semibold lg:text-2xl lg:leading-[30px]"
-              >
-                {contact.heading}
-              </h2>
-              <p className="mt-1 text-sm leading-[22px] text-muted-foreground">
-                {contact.pitch}
-              </p>
-            </div>
-          </div>
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* Left: intro + direct ways to reach me */}
+          <div>
+            <h2
+              id="contact-heading"
+              className="text-3xl leading-tight font-semibold lg:text-4xl"
+            >
+              {contact.heading}
+            </h2>
+            <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+              {contact.pitch}
+            </p>
 
-          <dl className="flex flex-col gap-5 lg:flex-row lg:gap-10">
-            <div>
-              <dt className="text-sm text-muted-foreground">Email</dt>
-              <dd className="mt-0.5">
-                <a href={`mailto:${profile.email}`} className="hover:underline">
+            <ul className="mt-8 space-y-4">
+              <li className="flex items-center gap-3">
+                <Mail className="size-5 shrink-0 text-link" aria-hidden />
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="text-md font-medium hover:text-link hover:underline"
+                >
                   {profile.email}
                 </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm text-muted-foreground">Location</dt>
-              <dd className="mt-0.5">{profile.location}</dd>
-            </div>
-          </dl>
+              </li>
 
-          <a
-            href={`mailto:${profile.email}`}
-            className={buttonVariants({ className: "w-full lg:w-auto" })}
-          >
-            Get in touch
-            <Send aria-hidden />
-          </a>
-        </Card>
+              {socials.map((social) => {
+                const Icon = socialIcons[social.name];
+                return (
+                  <li key={social.name} className="flex items-center gap-3">
+                    <Icon className="size-5 shrink-0 text-link" aria-hidden />
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-md font-medium hover:text-link hover:underline"
+                    >
+                      {social.name === "GitHub" ? "@wnsnisal" : "nisal-hasindu"}
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                );
+              })}
+
+              <li className="flex items-center gap-3">
+                <MapPin className="size-5 shrink-0 text-link" aria-hidden />
+                <span className="text-md font-medium">{profile.location}</span>
+              </li>
+            </ul>
+
+            <a
+              href={profile.cvPath}
+              download
+              className={cn(
+                buttonVariants({ variant: "outline", size: "md" }),
+                "mt-8",
+              )}
+            >
+              Download CV
+              <Download aria-hidden />
+            </a>
+          </div>
+
+          {/* Right: the form */}
+          <div>
+            <ContactForm />
+          </div>
+        </div>
       </Container>
     </section>
   );

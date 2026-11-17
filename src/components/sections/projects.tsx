@@ -10,9 +10,8 @@ const github = socials.find((social) => social.name === "GitHub");
 export function Projects() {
   return (
     <section
-      id="projects"
       aria-labelledby="projects-heading"
-      className="border-t border-border py-12 lg:py-16"
+      className="w-full py-12 lg:py-8"
     >
       <Container>
         <div className="flex items-center justify-between gap-4">
@@ -22,16 +21,16 @@ export function Projects() {
               href={github.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden items-center gap-2 rounded-sm text-sm text-link hover:underline lg:inline-flex"
+              className="hidden items-center gap-2 rounded-sm text-md text-link hover:underline lg:inline-flex"
             >
-              View all projects
+              More on GitHub
               <ArrowRight className="size-4" aria-hidden />
             </a>
           )}
         </div>
-        <ul className="mt-7 grid gap-5 md:grid-cols-2 lg:mt-8 lg:grid-cols-4">
-          {projects.map((project, index) => (
-            <li key={index}>
+        <ul className="mt-7 grid gap-5 sm:grid-cols-2 lg:mt-8 lg:grid-cols-3">
+          {projects.map((project) => (
+            <li key={project.name}>
               <ProjectCard project={project} />
             </li>
           ))}
