@@ -1,8 +1,22 @@
-import { type ReactNode } from "react";
+"use client";
+
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
 import { Parallax } from "@/components/ui/parallax";
 import { profile } from "@/data/profile";
 import { cn } from "@/lib/utils";
+
+/**
+ * Number of <Image> elements rendered below (desktop light+dark and mobile
+ * light+dark). The composition is revealed once all of them have settled.
+ * Off-breakpoint and hidden-theme images are `display:none` but still load and
+ * fire their events, so counting all four is safe on any theme/viewport.
+ */
+const PORTRAIT_IMAGE_COUNT = 4;
+
+/** Safety net: reveal anyway if an image event is somehow never delivered. */
+const REVEAL_FALLBACK_MS = 4000;
 
 /**
  * A labelled stat card. Reused in two places: as a floating overlay on the
@@ -46,12 +60,59 @@ const stackCard = {
 
 /**
  * Hero portrait composition. The photo, dot pattern and floating stat cards
- * drift at different speeds on scroll to create depth. Rendered on the client
- * because of the parallax; the data is still static.
+ * drift at different speeds on scroll to create depth. Client component: the
+ * whole composition is held hidden until the portrait images have loaded, then
+ * revealed with a gsap elastic "bump". The data is still static.
  */
 export function HeroVisual() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [settledCount, setSettledCount] = useState(0);
+  const onImageSettled = useCallback(
+    () => setSettledCount((c) => c + 1),
+    [],
+  );
+
+  // Fallback: don't stay invisible forever if an event never arrives.
+  useEffect(() => {
+    const timer = setTimeout(
+      () => setSettledCount((c) => Math.max(c, PORTRAIT_IMAGE_COUNT)),
+      REVEAL_FALLBACK_MS,
+    );
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Reveal + bump once every image has settled.
+  useEffect(() => {
+    if (settledCount < PORTRAIT_IMAGE_COUNT) return;
+    const el = rootRef.current;
+    if (!el) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) {
+      gsap.set(el, { opacity: 1, clearProps: "transform" });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { opacity: 0, scale: 0.9 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.9,
+          ease: "elastic.out(1, 0.6)",
+          clearProps: "transform",
+        },
+      );
+    }, el);
+    return () => ctx.revert();
+  }, [settledCount]);
+
   return (
-    <div>
+    <div ref={rootRef} style={{ opacity: 0 }}>
       {/* Desktop (lg+): the full composed portrait design. Hidden on mobile. */}
       <div className="relative mx-auto hidden h-[300px] w-[260px] lg:block lg:h-[480px] lg:w-[440px]">
         <Parallax
@@ -73,6 +134,8 @@ export function HeroVisual() {
             height={profile.photo.height}
             alt={`Portrait of ${profile.fullName}`}
             priority
+            onLoad={onImageSettled}
+            onError={onImageSettled}
             className={cn(
               "absolute top-5 left-5 z-10 h-[341px] w-[225px] max-w-none rounded-b-[120px] object-cover object-top lg:top-0 lg:left-[15px] lg:h-[546px] lg:w-[420px] lg:rounded-none",
               theme === "light" ? "dark:hidden" : "hidden dark:block",
@@ -120,6 +183,8 @@ export function HeroVisual() {
             height={profile.photoMobile.height}
             alt={`Portrait of ${profile.fullName}`}
             priority
+            onLoad={onImageSettled}
+            onError={onImageSettled}
             className={cn(
               "absolute rounded-full top-0 left-0 z-10 h-[361px] w-[300px] max-w-none object-cover object-top lg:top-0",
               theme === "light" ? "dark:hidden" : "hidden dark:block",
