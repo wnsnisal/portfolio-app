@@ -12,6 +12,7 @@ export const projects: Project[] = [
       "Contributed to backend development with Python and Django.",
       "Worked on architectural improvements and performance optimisation.",
     ],
+    image: "/images/prodoscore.png",
     liveUrl: "https://www.prodoscore.com",
   },
   {
@@ -36,6 +37,7 @@ export const projects: Project[] = [
       "Frontend development.",
       "Collaboration with other developers.",
     ],
+    image: "/images/apollo_art.png",
     liveUrl: "https://apollo.art",
   },
   {
@@ -48,6 +50,7 @@ export const projects: Project[] = [
       "Initial research into webOS and Tizen integration.",
       "Smart TV app development for both platforms.",
     ],
+    image: "/images/apollo_tv.JPG",
   },
   {
     name: "EggBurn.xyz",
