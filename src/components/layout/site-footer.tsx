@@ -10,7 +10,7 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border lg:fixed lg:inset-x-0 lg:bottom-0 lg:z-30 lg:bg-background/85 lg:backdrop-blur">
+    <footer className="border-t border-border lgtall:fixed lgtall:inset-x-0 lgtall:bottom-0 lgtall:z-30 lgtall:bg-background/85 lgtall:backdrop-blur">
       <Container className="flex flex-col items-center gap-3 py-5 text-center sm:flex-row sm:justify-between sm:gap-4 sm:py-3.5 sm:text-left">
         <p className="text-sm text-muted-foreground">
           © {year}{" "}

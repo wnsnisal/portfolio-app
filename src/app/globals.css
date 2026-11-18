@@ -3,6 +3,15 @@
 /* Class-based dark mode: `dark` class on <html> (see ThemeScript). */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* "Large and tall enough for horizontal mode." The pinned horizontal-scroll
+   experience (see HorizontalScroll) is enabled only at `lg` on viewports at
+   least 820px tall; below that height the page is a normal vertical scroll.
+   This variant tracks that same condition for the styling that only makes
+   sense while horizontal mode is active — chiefly the footer, which is pinned
+   over the 100vh panels there but must sit in normal flow when the page
+   scrolls vertically, or it would permanently cover the bottom of the content. */
+@custom-variant lgtall (@media (min-width: 1024px) and (min-height: 820px));
+
 /* Design tokens. Dark values come from the Figma design; light values are a
    matching palette with the same indigo accent. */
 :root {
@@ -81,7 +90,7 @@
       scroll-snap-type: y proximity;
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1024px) and (min-height: 820px) {
       html {
         scroll-snap-type: y mandatory;
         /* Horizontal mode: the snap markers are invisible position refs, not

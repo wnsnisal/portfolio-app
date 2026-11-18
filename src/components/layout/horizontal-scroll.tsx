@@ -38,8 +38,12 @@ export interface PanelDef {
  * targets that anchor links and `useActiveSection` rely on, so nav keeps
  * working unchanged.
  *
- * Enabled only on `lg+` with motion allowed; otherwise it renders a normal
- * vertical stack (so tall panels like the projects grid aren't trapped).
+ * Enabled only on `lg+`, on viewports at least `820px` tall, and with motion
+ * allowed; otherwise it renders a normal vertical stack. The height gate
+ * matters because each panel is pinned to `100vh` and clipped: on short
+ * screens (e.g. 1280×720 laptops/projectors) a panel's content is taller than
+ * the viewport and would be cropped top and bottom with no way to scroll to
+ * it, so there we fall back to the natural vertical scroll instead.
  */
 export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
   const count = panels.length;
@@ -51,7 +55,7 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
 
   useIsomorphicLayoutEffect(() => {
     const mq = window.matchMedia(
-      "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+      "(min-width: 1024px) and (min-height: 820px) and (prefers-reduced-motion: no-preference)",
     );
     const apply = () => {
       setEnabled(mq.matches);
@@ -134,10 +138,12 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
   }, [enabled, count]);
 
   // Vertical fallback: plain stacked flow, ids on the wrappers for anchors.
-  // `space-y-12` adds breathing room between sections on mobile only; it resets
-  // to `0` at `lg` (this branch renders there only under reduced motion, where
-  // each section supplies its own spacing). `lg:pb-24` leaves room for the
-  // footer when it is fixed (lg + reduced motion).
+  // `space-y-12` adds breathing room between sections; it resets to `0` only at
+  // `lgtall` — the condition under which horizontal mode would take over, where
+  // each section supplies its own spacing (this branch still renders there
+  // under reduced motion). On short `lg` viewports the page stays a vertical
+  // scroll, so the mobile spacing is kept. `lgtall:pb-24` leaves room for the
+  // footer, which is only fixed at `lgtall`.
   if (!enabled) {
     return (
       <>
@@ -147,13 +153,14 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
         </noscript>
         <div
           className={
-            "hs-fallback space-y-12 lg:space-y-0 lg:pb-24" +
+            "hs-fallback space-y-12 lgtall:space-y-0 lgtall:pb-24" +
             // Until the viewport is resolved (SSR + first paint), hide the
-            // fallback at lg only. On desktop it would otherwise paint at the
-            // top-of-flow position and then jump down by the horizontal panel's
-            // top padding once that layout takes over. Mobile keeps the fallback
-            // (no swap happens there), so it is never hidden.
-            (ready ? "" : " lg:invisible")
+            // fallback only where horizontal mode may take over (`lgtall`). On
+            // desktop it would otherwise paint at the top-of-flow position and
+            // then jump down by the horizontal panel's top padding once that
+            // layout takes over. Short/mobile viewports keep the fallback as the
+            // final layout (no swap happens), so they are never hidden.
+            (ready ? "" : " lgtall:invisible")
           }
         >
           {panels.map((panel) => (
