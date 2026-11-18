@@ -1,10 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * `useLayoutEffect` on the client, `useEffect` on the server. The viewport
+ * decision (vertical vs horizontal) and the pin offset must be applied *before*
+ * the browser paints — otherwise the SSR vertical fallback paints first and the
+ * content visibly jumps down by the panel's top padding when the horizontal
+ * layout takes over. The `useEffect` fallback avoids React's SSR warning.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export interface PanelDef {
   /** Anchor/active-section id for this panel (matches nav + `#hash` links). */
@@ -33,7 +49,7 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
   const [enabled, setEnabled] = useState(false);
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const mq = window.matchMedia(
       "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
     );
@@ -51,7 +67,7 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
     if (ready) window.dispatchEvent(new Event("sectionlayoutchange"));
   }, [enabled, ready]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!enabled) return;
     const container = containerRef.current;
     const track = trackRef.current;
@@ -124,13 +140,29 @@ export function HorizontalScroll({ panels }: { panels: PanelDef[] }) {
   // footer when it is fixed (lg + reduced motion).
   if (!enabled) {
     return (
-      <div className="space-y-12 lg:space-y-0 lg:pb-24">
-        {panels.map((panel) => (
-          <div key={panel.id} id={panel.id} className="scroll-mt-24">
-            {panel.node}
-          </div>
-        ))}
-      </div>
+      <>
+        {/* No-JS can never flip `ready`, so keep the fallback visible for it. */}
+        <noscript>
+          <style>{`.hs-fallback{visibility:visible!important}`}</style>
+        </noscript>
+        <div
+          className={
+            "hs-fallback space-y-12 lg:space-y-0 lg:pb-24" +
+            // Until the viewport is resolved (SSR + first paint), hide the
+            // fallback at lg only. On desktop it would otherwise paint at the
+            // top-of-flow position and then jump down by the horizontal panel's
+            // top padding once that layout takes over. Mobile keeps the fallback
+            // (no swap happens there), so it is never hidden.
+            (ready ? "" : " lg:invisible")
+          }
+        >
+          {panels.map((panel) => (
+            <div key={panel.id} id={panel.id} className="scroll-mt-24">
+              {panel.node}
+            </div>
+          ))}
+        </div>
+      </>
     );
   }
 
