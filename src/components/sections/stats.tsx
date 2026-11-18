@@ -12,7 +12,7 @@ export function Stats({ className }: { className?: string }) {
     >
       <Container>
         <Card className="bg-primary/5 dark:bg-card">
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 p-5 lg:grid-cols-4 lg:gap-x-6 lg:px-[29px] lg:py-[27px]">
+          <ul className="grid grid-cols-1 gap-x-4 gap-y-5 p-5 lg:grid-cols-4 lg:gap-x-6 lg:px-[29px] lg:py-[27px]">
             {stats.map(({ value, label, icon: Icon }) => (
               <li key={label} className="flex min-w-0 items-center gap-3 lg:gap-4">
                 <IconBox className="lg:size-12 bg-primary/10 dark:bg-primary/5">
